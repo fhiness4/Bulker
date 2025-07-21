@@ -470,7 +470,7 @@
         emailList.innerHTML = '';
         
         // Display up to 100 emails (for performance)
-        const displayCount = Math.min(validEmails.length, 200);
+        const displayCount = Math.min(validEmails.length, 20000);
         
         for (let i = 0; i < displayCount; i++) {
             const {email, name} = validEmails[i];
