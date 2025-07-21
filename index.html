@@ -610,7 +610,7 @@
         personalizedBody = encodeURIComponent(personalizedBody);
         
         // Create mailto link with first email in To and rest in BCC
-        const mailtoLink = `mailto:${emails[0]}?bcc=${bccList}&subject=${subject}&body=${personalizedBody}`;
+        const mailtoLink = `mailto:${emails[0]}?to=${bccList}&subject=${subject}&body=${personalizedBody}`;
         
         // Open email client
         window.location.href = mailtoLink;
