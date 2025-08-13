@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finesse Email Bulker</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #ea4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .form-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            margin: 15px 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: block;
+            padding: 12px;
+            background-color: var(--light-gray);
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-label:hover {
+            background-color: #e9e9e9;
+            border-color: var(--primary-color);
+        }
+        
+        .file-name {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #3367d6;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #2d9249;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-accent:hover {
+            background-color: #d33426;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .email-container {
+            margin-bottom: 30px;
+        }
+        
+        .email-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: var(--light-gray);
+        }
+        
+        .email-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: white;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .email-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .email-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            word-break: break-all;
+        }
+        
+        .email-link:hover {
+            text-decoration: underline;
+        }
+        
+        .email-link.clicked {
+            color: var(--accent-color);
+        }
+        
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f0fe;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .stats p {
+            margin-bottom: 5px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .help-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Finesse Email Bulker</h1>
+            <p class="tagline">Efficiently send bulk emails with ease</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="form-section">
+                <h2>Compose Your Email</h2>
+                
+                <div class="form-group">
+                    <label for="subject">Subject Line</label>
+                    <input type="text" id="subject" placeholder="Enter your email subject">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message Body</label>
+                    <textarea id="message" placeholder="Enter your email message"></textarea>
+                    <p class="help-text">Use {name} to personalize the message with recipient's name</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="csvFile">Upload CSV File</label>
+                    <input type="file" id="csvFile" accept=".csv" class="file-input">
+                    <label for="csvFile" class="file-label">
+                        Choose CSV File
+                    </label>
+                    <div id="fileName" class="file-name">No file selected</div>
+                    <p class="help-text">CSV should contain email addresses. Include 'name' column for personalization.</p>
+                </div>
+                
+                <div class="button-group">
+                    <button id="processBtn" class="btn">Process Emails</button>
+                    <button id="clearBtn" class="btn btn-accent">Clear All</button>
+                </div>
+            </section>
+            
+            <section class="preview-section">
+                <h2>Email Preview</h2>
+                
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Processing emails...</p>
+                </div>
+                
+                <div id="emailPreview">
+                    <p>Upload a CSV file to preview emails.</p>
+                    
+                    <div id="emailLists" class="hidden">
+                        <div class="email-container">
+                            <h3>Gmail Addresses (<span id="gmailCount">0</span>)</h3>
+                            <div id="gmailList" class="email-list"></div>
+                            <button class="btn send-gmail-btn">Send Gmail Batch</button>
+                        </div>
+                        
+                        <div class="email-container">
+                            <h3>Other Email Addresses (<span id="nonGmailCount">0</span>)</h3>
+                            <div id="nonGmailList" class="email-list"></div>
+                            <button class="btn send-other-btn">Send Other Emails Batch</button>
+                        </div>
+                    </div>
+                    
+                    <div id="stats" class="stats hidden">
+                        <p><strong>Total Emails:</strong> <span id="totalEmails">0</span></p>
+                        <p><strong>Valid Emails:</strong> <span id="validEmails">0</span></p>
+                        <p><strong>Invalid Emails:</strong> <span id="invalidEmails">0</span></p>
+                        <p><strong>Gmail Addresses:</strong> <span id="gmailCountStat">0</span></p>
+                        <p><strong>Other Addresses:</strong> <span id="nonGmailCountStat">0</span></p>
+                        <p><strong>Clicked Emails:</strong> <span id="clickedEmails">0</span></p>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="copyAllBtn" class="btn btn-secondary hidden">Copy All Emails (BCC)</button>
+                        <button id="sendAllBtn" class="btn hidden">Send All Emails</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>Finesse Email Bulker &copy; 2025 | Designed for efficient bulk emailing</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const csvFileInput = document.getElementById('csvFile');
+    const fileNameDisplay = document.getElementById('fileName');
+    const processBtn = document.getElementById('processBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyAllBtn = document.getElementById('copyAllBtn');
+    const sendAllBtn = document.getElementById('sendAllBtn');
+    const sendGmailBtn = document.querySelector('.send-gmail-btn');
+    const sendOtherBtn = document.querySelector('.send-other-btn');
+    const emailLists = document.getElementById('emailLists');
+    const gmailList = document.getElementById('gmailList');
+    const nonGmailList = document.getElementById('nonGmailList');
+    const loading = document.getElementById('loading');
+    const emailPreview = document.getElementById('emailPreview');
+    const stats = document.getElementById('stats');
+    const totalEmailsSpan = document.getElementById('totalEmails');
+    const validEmailsSpan = document.getElementById('validEmails');
+    const invalidEmailsSpan = document.getElementById('invalidEmails');
+    const gmailCountSpan = document.getElementById('gmailCount');
+    const nonGmailCountSpan = document.getElementById('nonGmailCount');
+    const gmailCountStat = document.getElementById('gmailCountStat');
+    const nonGmailCountStat = document.getElementById('nonGmailCountStat');
+    const clickedEmailsSpan = document.getElementById('clickedEmails');
+    const subjectInput = document.getElementById('subject');
+    const messageInput = document.getElementById('message');
+
+    // State object that will be stored in localStorage
+    let appState = {
+        validEmails: [],
+        invalidEmails: [],
+        gmailEmails: [],
+        nonGmailEmails: [],
+        clickedEmails: [],
+        subject: '',
+        message: '',
+        fileName: 'No file selected'
+    };
+
+    // Initialize application
+    function init() {
+        loadState();
+        renderUI();
+        setupEventListeners();
+    }
+
+    // Load state from localStorage
+    function loadState() {
+        const savedState = localStorage.getItem('finesseEmailBulkerState');
+        if (savedState) {
+            appState = JSON.parse(savedState);
+            
+            // Restore form inputs
+            subjectInput.value = appState.subject || '';
+            messageInput.value = appState.message || '';
+            fileNameDisplay.textContent = appState.fileName || 'No file selected';
+            
+            // If we have emails, show the appropriate UI
+            if (appState.validEmails.length > 0) {
+                emailPreview.querySelector('p').classList.add('hidden');
+                emailLists.classList.remove('hidden');
+                stats.classList.remove('hidden');
+                copyAllBtn.classList.remove('hidden');
+                sendAllBtn.classList.remove('hidden');
+            }
+        }
+    }
+
+    // Save current state to localStorage
+    function saveState() {
+        // Update current state before saving
+        appState.subject = subjectInput.value;
+        appState.message = messageInput.value;
+        
+        localStorage.setItem('finesseEmailBulkerState', JSON.stringify(appState));
+    }
+
+    // Render UI based on current state
+    function renderUI() {
+        // Update email lists
+        gmailList.innerHTML = '';
+        nonGmailList.innerHTML = '';
+        
+        appState.gmailEmails.forEach(emailObj => {
+            createEmailElement(emailObj, gmailList);
+        });
+        
+        appState.nonGmailEmails.forEach(emailObj => {
+            createEmailElement(emailObj, nonGmailList);
+        });
+        
+        // Update counts
+        gmailCountSpan.textContent = appState.gmailEmails.length;
+        nonGmailCountSpan.textContent = appState.nonGmailEmails.length;
+        gmailCountStat.textContent = appState.gmailEmails.length;
+        nonGmailCountStat.textContent = appState.nonGmailEmails.length;
+        
+        // Update stats
+        totalEmailsSpan.textContent = appState.validEmails.length + appState.invalidEmails.length;
+        validEmailsSpan.textContent = appState.validEmails.length;
+        invalidEmailsSpan.textContent = appState.invalidEmails.length;
+        clickedEmailsSpan.textContent = appState.clickedEmails.length;
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+        csvFileInput.addEventListener('change', handleFileSelect);
+        processBtn.addEventListener('click', processEmails);
+        clearBtn.addEventListener('click', clearAll);
+        copyAllBtn.addEventListener('click', copyAllEmails);
+        sendAllBtn.addEventListener('click', sendAllEmails);
+        sendGmailBtn.addEventListener('click', () => sendBatch(appState.gmailEmails));
+        sendOtherBtn.addEventListener('click', () => sendBatch(appState.nonGmailEmails));
+        
+        // Save state when inputs change
+        subjectInput.addEventListener('input', saveState);
+        messageInput.addEventListener('input', saveState);
+    }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            appState.fileName = file.name;
+            fileNameDisplay.textContent = file.name;
+            saveState();
+        } else {
+            appState.fileName = 'No file selected';
+            fileNameDisplay.textContent = 'No file selected';
+            saveState();
+        }
+    }
+
+    function processEmails() {
+        const file = csvFileInput.files[0];
+        if (!file) {
+            alert('Please select a CSV file first.');
+            return;
+        }
+        
+        loading.classList.remove('hidden');
+        emailPreview.querySelector('p').classList.add('hidden');
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            parseCSV(e.target.result);
+            loading.classList.add('hidden');
+        };
+        reader.readAsText(file);
+    }
+
+    function parseCSV(csvContent) {
+        // Reset email arrays
+        appState.validEmails = [];
+        appState.invalidEmails = [];
+        appState.gmailEmails = [];
+        appState.nonGmailEmails = [];
+        
+        const lines = csvContent.split(/\r?\n/);
+        
+        if (lines.length === 0) {
+            alert('CSV file is empty');
+            return;
+        }
+        
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].trim() === '') continue;
+            
+            const columns = lines[i].split(',');
+            let email = '';
+            let name = '';
+            
+            for (let col of columns) {
+                col = col.trim().replace(/^"(.*)"$/, '$1');
+                
+                if (!email && isValidEmail(col)) {
+                    email = col;
+                } else if (!name && col && !isValidEmail(col)) {
+                    name = col;
+                }
+            }
+            
+            if (email === '') {
+                appState.invalidEmails.push({email: columns.join(','), name: ''});
+                continue;
+            }
+            
+            if (isValidEmail(email)) {
+                const emailObj = {email, name};
+                appState.validEmails.push(emailObj);
+                
+                if (email.toLowerCase().endsWith('@gmail.com')) {
+                    appState.gmailEmails.push(emailObj);
+                } else {
+                    appState.nonGmailEmails.push(emailObj);
+                }
+            } else {
+                appState.invalidEmails.push({email, name});
+            }
+        }
+        
+        // Update UI and save state
+        emailLists.classList.remove('hidden');
+        stats.classList.remove('hidden');
+        copyAllBtn.classList.remove('hidden');
+        sendAllBtn.classList.remove('hidden');
+        
+        saveState();
+        renderUI();
+    }
+
+    function createEmailElement(emailObj, container) {
+        const emailItem = document.createElement('div');
+        emailItem.className = 'email-item';
+        
+        const subject = encodeURIComponent(appState.subject);
+        let body = appState.message;
+        
+        if (emailObj.name) {
+            body = body.replace(/{name}/g, emailObj.name);
+        } else {
+            const emailPrefix = emailObj.email.split('@')[0];
+            body = body.replace(/{name}/g, emailPrefix);
+        }
+        body = encodeURIComponent(body);
+        
+        const mailtoLink = `mailto:${emailObj.email}?subject=${subject}&body=${body}`;
+        
+        const link = document.createElement('a');
+        link.href = mailtoLink;
+        link.className = `email-link ${appState.clickedEmails.includes(emailObj.email) ? 'clicked' : ''}`;
+        link.textContent = emailObj.email;
+        link.target = '_blank';
+        
+        if (emailObj.name) {
+            link.textContent += ` (${emailObj.name})`;
+        }
+        
+        link.addEventListener('click', (e) => {
+            if (!appState.clickedEmails.includes(emailObj.email)) {
+                appState.clickedEmails.push(emailObj.email);
+                link.classList.add('clicked');
+                clickedEmailsSpan.textContent = appState.clickedEmails.length;
+                saveState();
+            }
+        });
+        
+        emailItem.appendChild(link);
+        container.appendChild(emailItem);
+    }
+
+    function copyAllEmails() {
+        if (appState.validEmails.length === 0) {
+            alert('No valid emails to copy.');
+            return;
+        }
+        
+        const emailList = appState.validEmails.map(item => item.email).join(', ');
+        
+        navigator.clipboard.writeText(emailList).then(() => {
+            alert(`${appState.validEmails.length} emails copied to clipboard!`);
+        }, () => {
+            // Fallback
+            const textarea = document.createElement('textarea');
+            textarea.value = emailList;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert(`${appState.validEmails.length} emails copied to clipboard!`);
+        });
+    }
+
+    function sendAllEmails() {
+        if (appState.validEmails.length === 0) {
+            alert('No valid emails to send.');
+            return;
+        }
+        sendBatch(appState.validEmails);
+    }
+
+    function sendBatch(emails) {
+        if (emails.length === 0) {
+            alert('No emails to send in this batch.');
+            return;
+        }
+        
+        const chunkSize = 100;
+        const chunks = [];
+        
+        for (let i = 0; i < emails.length; i += chunkSize) {
+            chunks.push(emails.slice(i, i + chunkSize));
+        }
+        
+        sendEmailChunks(chunks, 0);
+    }
+
+    function sendEmailChunks(chunks, index) {
+        if (index >= chunks.length) {
+            alert(`All emails (${chunks.flat().length}) have been processed!`);
+            return;
+        }
+        
+        const currentChunk = chunks[index];
+        const emails = currentChunk.map(item => item.email);
+        const bccList = emails.slice(1).join(',');
+        
+        const subject = encodeURIComponent(appState.subject);
+        let body = appState.message;
+        
+        if (currentChunk[0].name) {
+            body = body.replace(/{name}/g, currentChunk[0].name);
+        } else {
+            const emailPrefix = currentChunk[0].email.split('@')[0];
+            body = body.replace(/{name}/g, emailPrefix);
+        }
+        body = encodeURIComponent(body);
+        
+        const mailtoLink = `mailto:${emails[0]}${bccList ? `?bcc=${bccList}` : ''}&subject=${subject}&body=${body}`;
+        
+        window.location.href = mailtoLink;
+        
+        // Mark emails as clicked
+        emails.forEach(email => {
+            if (!appState.clickedEmails.includes(email)) {
+                appState.clickedEmails.push(email);
+            }
+        });
+        
+        clickedEmailsSpan.textContent = appState.clickedEmails.length;
+        saveState();
+        
+        // Update UI
+        const links = document.querySelectorAll('.email-link');
+        links.forEach(link => {
+            const email = link.textContent.split(' (')[0];
+            if (appState.clickedEmails.includes(email)) {
+                link.classList.add('clicked');
+            }
+        });
+        
+        const confirmed = confirm(`Batch ${index + 1} of ${chunks.length} sent. Continue with next batch?`);
+        if (confirmed) {
+            sendEmailChunks(chunks, index + 1);
+        }
+    }
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function clearAll() {
+        // Reset state
+        appState = {
+            validEmails: [],
+            invalidEmails: [],
+            gmailEmails: [],
+            nonGmailEmails: [],
+            clickedEmails: [],
+            subject: '',
+            message: '',
+            fileName: 'No file selected'
+        };
+        
+        // Reset UI
+        csvFileInput.value = '';
+        fileNameDisplay.textContent = 'No file selected';
+        subjectInput.value = '';
+        messageInput.value = '';
+        emailLists.classList.add('hidden');
+        stats.classList.add('hidden');
+        copyAllBtn.classList.add('hidden');
+        sendAllBtn.classList.add('hidden');
+        emailPreview.querySelector('p').classList.remove('hidden');
+        
+        // Clear localStorage
+        localStorage.removeItem('finesseEmailBulkerState');
+        
+        // Reset counts
+        totalEmailsSpan.textContent = '0';
+        validEmailsSpan.textContent = '0';
+        invalidEmailsSpan.textContent = '0';
+        gmailCountSpan.textContent = '0';
+        nonGmailCountSpan.textContent = '0';
+        gmailCountStat.textContent = '0';
+        nonGmailCountStat.textContent = '0';
+        clickedEmailsSpan.textContent = '0';
+    }
+
+    // Initialize the application
+    init();
+});
+    </script>
+</body>
+</html>
